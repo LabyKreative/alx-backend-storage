@@ -19,14 +19,8 @@ BEGIN
     WHERE corrections.user_id = user_id;
 
     -- Compute the average score and store it
-    IF projects_count > 0 THEN
-        UPDATE users
-        SET users.average_score = total_score / projetcts_count
-        WHERE users.id = user_id;
-    ELSE
-        UPDATE users
-        SET users.average_score = NULL
-        WHERE users.id = user_id;
-    END IF;
+    UPDATE users
+    SET users.average_score = IF(projects_count = 0, 0, total_score / projetcts_count)
+    WHERE users.id = user_id;
 END //
 DELIMITER ;
