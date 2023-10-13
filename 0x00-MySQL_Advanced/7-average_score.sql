@@ -21,12 +21,12 @@ BEGIN
     -- Compute the average score and store it
     IF projects_count > 0 THEN
         UPDATE users
-        SET average_score = total_score / projetcts_count
-        WHERE id = user_id;
+        SET users.average_score = total_score / projetcts_count
+        WHERE users.id = user_id;
     ELSE
         UPDATE users
-        SET average_score = NULL
-        WHERE id = user_id;
+        SET users.average_score = NULL
+        WHERE users.id = user_id;
     END IF;
 END //
 DELIMITER ;
