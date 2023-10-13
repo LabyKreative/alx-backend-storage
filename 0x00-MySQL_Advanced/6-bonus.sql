@@ -12,7 +12,7 @@ BEGIN
     FROM projects
     WHERE name = project_name;
 
-    IF project_count IS NULL THEN
+    IF project_count = 0 THEN
         -- Project doesn't exist, so create it
         INSERT INTO projects(name) VALUES (project_name);
     END IF;
