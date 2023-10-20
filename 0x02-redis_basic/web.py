@@ -1,32 +1,21 @@
 #!/usr/bin/env python3
-"""a script for request caching and tracking."""
+"""get_page function using the requests module to fetch the
+content of a URL and cache it using a decorator.
+"""
 import redis
 import requests
-from functools import wraps
-from typing import Callable
+r = redis.Redis()
+count = 0
 
 
-redis_store = redis.Redis()
-"""Instantiate Redis module-level."""
-
-
-def data_cacher(method: Callable) -> Callable:
-    """Output of fetched data cached."""
-    @wraps(method)
-    def invoker(url) -> str:
-        """Wrapper function for caching the output."""
-        redis_store.incr(f'count:{url}')
-        result = redis_store.get(f'result:{url}')
-        if result:
-            return result.decode('utf-8')
-        result = method(url)
-        redis_store.set(f'count:{url}', 0)
-        redis_store.setex(f'result:{url}', 10, result)
-        return result
-    return invoker
-
-
-@data_cacher
 def get_page(url: str) -> str:
-    """Returns the content of a URL after caching requests."""
-    return requests.get(url).text
+    """Define the key for caching."""
+    r.SET(f"cached:{url}", count)
+    resp = requests.get(url)
+    r.INCR(f"count:{url}")
+    r.SETEX(f"cached:{url}", 10, r.get(f"cached:{url}"))
+    return resp.text
+
+
+if __name__ == "__main__":
+    get_page("http://slowwly.robertomurray.co.uk")
