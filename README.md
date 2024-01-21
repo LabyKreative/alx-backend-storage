@@ -1,1 +1,1 @@
-### MySQL advanced
+### MySQL advanced usage
